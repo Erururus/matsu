@@ -6,37 +6,68 @@
     <title>馬祖跳島行程</title>
     <style>
         :root {
-            --bg-color: #f4f6f7; --card-bg: #ffffff; --primary: #37474f; 
+            --bg-color: #f4f6f7; --card-bg: #ffffff; --primary: #37474f; --primary-light: #62727b;
             --c-traffic: #5aa1d8; --c-attraction: #6bc28c; --c-meal: #e68573;
             --c-snack: #f0b551; --c-shop: #af8ed1; --c-accom: #6688c7;
             --text-main: #263238; --text-muted: #78909c; --border: #eceff1;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent;}
         body { font-family: -apple-system, sans-serif; background: var(--bg-color); color: var(--text-main); padding-bottom: 30px; }
+        
         .sticky-header { position: sticky; top: 0; z-index: 100; background: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .main-app-title { color: #ffffff; text-align: center; padding: 16px 0 8px; font-size: 18px; font-weight: 600; }
+        .main-app-title { color: #ffffff; text-align: center; padding: 16px 0 8px; font-size: 18px; font-weight: 600; letter-spacing: 1.5px;}
         .tabs-header { display: flex; height: 50px; }
-        .tab-btn { flex: 1; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 15px; cursor: pointer; border-bottom: 3px solid transparent; }
+        .tab-btn { flex: 1; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 15px; cursor: pointer; border-bottom: 3px solid transparent; transition: 0.3s;}
         .tab-btn.active { color: #ffffff; border-bottom: 3px solid #ffffff; }
-        .tab-content { display: none; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out;}
         .tab-content.active { display: block; }
-        .card { background: var(--card-bg); margin: 16px; border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
+        .card { background: var(--card-bg); margin: 16px; border-radius: 12px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(38, 50, 56, 0.05); }
+        .section-title { font-size: 18px; font-weight: 600; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        .section-title svg { margin-right: 8px; width: 22px; height: 22px; fill: var(--c-traffic); }
+
+        /* 總覽樣式 */
+        .o-day-title { font-size: 15px; font-weight: 600; color: var(--primary); margin-bottom: 12px; background: var(--border); padding: 4px 10px; border-radius: 6px; display: inline-block; }
+        .o-traffic-item { margin-bottom: 16px; padding-left: 8px; border-left: 3px solid var(--c-traffic); }
+        .o-t-header { display: flex; align-items: baseline; flex-wrap: wrap; margin-bottom: 4px; }
+        .o-t-tag { font-size: 13px; font-weight: 600; color: var(--c-traffic); margin-right: 8px; background: rgba(90, 161, 216, 0.1); padding: 2px 6px; border-radius: 4px; }
+        .o-t-title { font-size: 16px; font-weight: bold; }
+        .o-t-time { font-size: 14px; color: var(--primary-light); margin-bottom: 4px; display: flex; align-items: center; }
+        .o-t-time svg { width: 14px; height: 14px; margin-right: 4px; fill: var(--text-muted); }
+        .o-t-note { font-size: 13px; color: var(--text-muted); background: var(--bg-color); padding: 6px 10px; border-radius: 6px; margin-top: 4px;}
+        
+        .o-acc-item { margin-bottom: 20px; }
+        .o-acc-loc { font-size: 14px; color: #ffffff; background: var(--c-accom); padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }
+        .o-acc-name { font-size: 17px; font-weight: bold; margin-bottom: 4px;}
+        .o-acc-detail { font-size: 14px; color: var(--primary-light); margin-bottom: 4px;}
+        .o-acc-note { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+
         /* 匯入介面 */
-        #import-zone { text-align: center; padding: 40px 20px; }
-        .btn-import { background: var(--primary); color: white; padding: 12px 24px; border-radius: 8px; border: none; font-size: 16px; cursor: pointer; }
+        #import-zone { text-align: center; padding: 40px 20px; margin-top: 50px;}
+        .btn-import { background: var(--primary); color: white; padding: 12px 24px; border-radius: 8px; border: none; font-size: 16px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
         
-        /* 日期與時間軸樣式 (承襲之前設計) */
-        .day-slider { display: flex; overflow-x: auto; padding: 12px 16px; background: #fff; position: sticky; top: 94px; z-index: 90; border-bottom: 1px solid var(--border); }
-        .day-chip { flex: 0 0 auto; padding: 8px 16px; margin-right: 12px; border-radius: 20px; font-size: 14px; background: var(--bg-color); border: 1px solid var(--border); }
-        .day-chip.active { background: var(--primary); color: #fff; }
-        .t-row { display: flex; margin-bottom: 24px; position: relative; }
-        .t-icon-wrap { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; border: 3px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        /* 每日行程 */
+        .day-slider { display: flex; overflow-x: auto; padding: 12px 16px; background: #fff; position: sticky; top: 94px; z-index: 90; border-bottom: 1px solid var(--border); scrollbar-width: none;}
+        .day-slider::-webkit-scrollbar { display: none; }
+        .day-chip { flex: 0 0 auto; padding: 8px 16px; margin-right: 12px; border-radius: 20px; font-size: 14px; font-weight: 500; background: var(--bg-color); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; transition: 0.2s;}
+        .day-chip.active { background: var(--primary); color: #fff; border-color: var(--primary);}
+        
+        .timeline-card { position: relative; padding: 20px 16px; }
+        .timeline-line { position: absolute; left: 35px; top: 20px; bottom: 20px; width: 2px; background: var(--border); z-index: 1; }
+        .t-row { display: flex; margin-bottom: 24px; position: relative; z-index: 2;}
+        .t-row:last-child { margin-bottom: 0; }
+        .t-icon-wrap { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 12px; border: 3px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .t-icon-wrap svg { width: 20px; height: 20px; fill: #ffffff; }
         .t-content { flex: 1; background: var(--bg-color); padding: 12px 16px; border-radius: 10px; }
         .t-time-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
         .t-type { font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 4px; color: #fff; }
-        .t-time { font-size: 14px; font-weight: 600; }
-        .t-title { font-size: 16px; font-weight: bold; display: flex; justify-content: space-between; }
+        .t-time { font-size: 14px; font-weight: 600; color: var(--primary); letter-spacing: 0.5px;}
+        .t-title { font-size: 16px; font-weight: bold; display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;}
+        .t-note { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+        .map-btn { color: var(--c-traffic); background: rgba(90, 161, 216, 0.1); padding: 4px; border-radius: 50%; display: flex; flex-shrink: 0; margin-left: 8px; text-decoration: none;}
+        .map-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
         .bg-traffic { background-color: var(--c-traffic); }
         .bg-attraction { background-color: var(--c-attraction); }
         .bg-meal { background-color: var(--c-meal); }
@@ -51,30 +82,47 @@
         <div class="sticky-header">
             <div class="main-app-title" id="trip-title">載入中...</div>
             <div class="tabs-header">
-                <div class="tab-btn active" onclick="switchTab('overview')">行程總覽</div>
-                <div class="tab-btn" onclick="switchTab('daily')">每日行程</div>
+                <div id="tab-overview" class="tab-btn active" onclick="switchTab('overview')">行程總覽</div>
+                <div id="tab-daily" class="tab-btn" onclick="switchTab('daily')">每日行程</div>
             </div>
         </div>
-        <div id="content-overview" class="tab-content active"></div>
+        
+        <div id="content-overview" class="tab-content active">
+            </div>
+        
         <div id="content-daily" class="tab-content">
             <div class="day-slider" id="day-slider"></div>
-            <div class="card"><div id="timeline-container"></div></div>
+            <div class="card timeline-card">
+                <div class="timeline-line"></div>
+                <div id="timeline-container"></div>
+            </div>
         </div>
-        <div style="text-align: center; margin-top: 20px;">
-            <button onclick="clearData()" style="color: var(--text-muted); background: none; border: none; text-decoration: underline;">清除行程並重新匯入</button>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="clearData()" style="color: var(--text-muted); background: none; border: none; text-decoration: underline; font-size: 14px; cursor:pointer;">清除此行程並重新匯入</button>
         </div>
     </div>
 
     <div id="import-zone">
         <div class="card">
-            <h2 style="margin-bottom: 20px;">尚未匯入行程</h2>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">請選擇朋友傳給你的行程資料檔 (.json)</p>
+            <h2 style="margin-bottom: 16px; color: var(--primary);">尚未匯入行程</h2>
+            <p style="color: var(--text-muted); margin-bottom: 24px;">這是一個空殼，請選擇朋友傳給你的行程資料檔 (.json) 來載入內容。</p>
             <input type="file" id="file-input" accept=".json" style="display: none;" onchange="handleFile(this)">
-            <button class="btn-import" onclick="document.getElementById('file-input').click()">選擇行程檔案</button>
+            <button class="btn-import" onclick="document.getElementById('file-input').click()">匯入行程檔案</button>
         </div>
     </div>
 
     <script>
+        const icons = {
+            '交通': '<path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z"/>',
+            '景點': '<path d="M12 12c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-6h-2.83L13.5 4h-3L8.83 6H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H6V8h3.38l1.38-2h2.48l1.38 2H18v10z"/>',
+            '正餐': '<path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.86 3.75 3.97V22h2.5v-9.03C11.34 12.86 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/>',
+            '點心': '<path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>',
+            '購物': '<path d="M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v12z"/>',
+            '住宿': '<path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/>'
+        };
+
+        const classMap = { '交通': 'traffic', '景點': 'attraction', '正餐': 'meal', '點心': 'snack', '購物': 'shop', '住宿': 'accom' };
         let tripData = null;
 
         function handleFile(input) {
@@ -85,7 +133,7 @@
                     const data = JSON.parse(e.target.result);
                     localStorage.setItem('matsu_trip_data', JSON.stringify(data));
                     initApp(data);
-                } catch (err) { alert('檔案格式錯誤！'); }
+                } catch (err) { alert('檔案格式錯誤！請確認選擇的是正確的 json 檔。'); }
             };
             reader.readAsText(file);
         }
@@ -101,57 +149,133 @@
         }
 
         function renderOverview() {
-            // 這裡會根據資料動態生成總覽內容 (代碼略，邏輯同前)
-            let html = `<div class="card"><h3>交通重點</h3><p>請參考每日行程</p></div>`; 
-            // 實際發布時我會補完整個動態渲染邏輯
-            document.getElementById('content-overview').innerHTML = html;
+            // 生成交通資訊
+            const trafficHtml = tripData.overview.traffic.map(day => `
+                <div style="margin-bottom: 24px;">
+                    <div class="o-day-title">${day.day}</div>
+                    ${day.items.map(item => `
+                        <div class="o-traffic-item">
+                            <div class="o-t-header">
+                                ${item.tag ? `<span class="o-t-tag">${item.tag}</span>` : ''}
+                                <span class="o-t-title">${item.title}</span>
+                            </div>
+                            ${item.time ? `<div class="o-t-time"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> ${item.time}</div>` : ''}
+                            ${item.note ? `<div class="o-t-note">${item.note}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+
+            // 生成住宿資訊
+            const accomHtml = tripData.overview.accommodation.map((acc, index) => `
+                <div class="o-acc-item">
+                    <div class="o-acc-loc">${acc.loc}</div>
+                    <div class="o-acc-name">${acc.name}</div>
+                    <div class="o-acc-detail"><svg style="width:14px;height:14px;fill:currentColor;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg> ${acc.detail}</div>
+                    <div class="o-acc-note">${acc.note}</div>
+                </div>
+                ${index !== tripData.overview.accommodation.length - 1 ? `<div style="border-top: 1px dashed var(--border); margin: 16px 0;"></div>` : ''}
+            `).join('');
+
+            // 組合總覽頁面
+            document.getElementById('content-overview').innerHTML = `
+                <div class="card">
+                    <div class="section-title">
+                        <svg viewBox="0 0 24 24"><path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z"/></svg>
+                        交通重點資訊
+                    </div>
+                    ${trafficHtml}
+                </div>
+                <div class="card">
+                    <div class="section-title">
+                        <svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+                        住宿重點資訊
+                    </div>
+                    ${accomHtml}
+                </div>
+                <a href="${tripData.config.mapLink}" target="_blank" class="card" style="display:flex; align-items:center; text-decoration:none;">
+                    <div style="background:var(--c-traffic); padding:10px; border-radius:50%; margin-right:12px; flex-shrink:0;">
+                        <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:#fff;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    </div>
+                    <div style="font-size:16px; font-weight:600; color:var(--text-main);">馬祖旅遊地圖</div>
+                </a>
+            `;
         }
 
         function renderDailySlider() {
             let html = '';
-            for(let i=1; i<=Object.keys(tripData.daily).length; i++) {
-                html += `<div class="day-chip ${i===1?'active':''}" onclick="switchDaily(${i}, this)">DAY ${i}</div>`;
-            }
+            // 動態抓取天數，並抓取第一筆資料的日期作為按鈕文字
+            Object.keys(tripData.daily).forEach((dayNum, index) => {
+                // 這裡我們直接用硬編碼的日期，或你也可以從 JSON 的 Overview 裡抽出日期字串
+                // 為了簡潔，我們抓取 overview 裡的日期字串 (例如 "DAY 1－5/17㊐")，並做字串裁切
+                const dayStr = tripData.overview.traffic[index].day.replace('－', ' ');
+                html += `<div class="day-chip ${index===0?'active':''}" onclick="switchDaily(${dayNum}, this)">${dayStr}</div>`;
+            });
             document.getElementById('day-slider').innerHTML = html;
         }
 
         function renderDaily(dayNum) {
             const container = document.getElementById('timeline-container');
             const data = tripData.daily[dayNum];
-            container.innerHTML = data.map(item => `
+            
+            let html = '';
+            data.forEach(item => {
+                const bgClass = 'bg-' + (classMap[item.type] || 'traffic');
+                const iconSvg = icons[item.type] || icons['交通'];
+                const linkHtml = item.link ? `<a href="${item.link}" class="map-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z"/></svg></a>` : '';
+                
+                html += `
                 <div class="t-row">
+                    <div class="t-icon-wrap ${bgClass}">
+                        <svg viewBox="0 0 24 24">${iconSvg}</svg>
+                    </div>
                     <div class="t-content">
                         <div class="t-time-wrap">
-                            <span class="t-type" style="background:${getTypeColor(item.type)}">${item.type}</span>
+                            <span class="t-type ${bgClass}">${item.type}</span>
                             <span class="t-time">${item.time}</span>
                         </div>
-                        <div class="t-title">${item.title}</div>
-                        <div style="font-size:13px; color:#78909c">${item.note || ''}</div>
+                        <div class="t-title">
+                            <span>${item.title}</span>
+                            ${linkHtml}
+                        </div>
+                        ${item.note ? `<div class="t-note">${item.note}</div>` : ''}
                     </div>
-                </div>
-            `).join('');
-        }
-
-        function getTypeColor(type) {
-            const colors = { '交通': '#5aa1d8', '景點': '#6bc28c', '正餐': '#e68573', '點心': '#f0b551', '購物': '#af8ed1', '住宿': '#6688c7' };
-            return colors[type] || '#37474f';
+                </div>`;
+            });
+            container.innerHTML = html;
         }
 
         function switchTab(tab) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('content-' + tab).classList.add('active');
-            event.currentTarget.classList.add('active');
+            document.getElementById('tab-' + tab).classList.add('active');
+            
+            // 當切換到每日行程時，確保捲軸跟 Slider 對齊
+            if(tab === 'daily' && document.getElementById('timeline-container').innerHTML === '') {
+                renderDaily(1);
+            }
+        }
+
+        function switchDaily(dayNum, btnElement) {
+            document.querySelectorAll('.day-chip').forEach(c => c.classList.remove('active'));
+            btnElement.classList.add('active');
+            btnElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            renderDaily(dayNum);
         }
 
         function clearData() {
-            localStorage.removeItem('matsu_trip_data');
-            location.reload();
+            if(confirm("確定要清除目前手機裡的行程資料嗎？")) {
+                localStorage.removeItem('matsu_trip_data');
+                location.reload();
+            }
         }
 
-        // 自動檢查本地有無資料
-        const saved = localStorage.getItem('matsu_trip_data');
-        if(saved) initApp(JSON.parse(saved));
+        // 啟動時檢查 LocalStorage 有沒有存好的行程
+        const savedData = localStorage.getItem('matsu_trip_data');
+        if(savedData) {
+            initApp(JSON.parse(savedData));
+        }
     </script>
 </body>
 </html>
