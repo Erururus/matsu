@@ -1,0 +1,16 @@
+{
+  "name": "馬祖跳島行程",
+  "short_name": "馬祖跳島",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6f7",
+  "theme_color": "#37474f",
+  "icons": [
+    {
+      "src": "app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
